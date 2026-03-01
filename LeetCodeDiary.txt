@@ -1,0 +1,94 @@
+Задача 605.
+
+Моя идея. 
+1. Пометить незанятые участки (первый проход)
+2. Разместить цветы там где это возможно (учитываем, что каждый новый цветок исключает посадку в сосоедних с ним клетках) (второй проход)
+
+#include <iostream>
+#include <vector>
+
+class Solution 
+{
+public:
+    bool canPlaceFlowers(std::vector<int>& flowerbed, int n) 
+    {
+    	int index = 0; 
+		int end = flowerbed.size();
+		while(index < end)								// первый проход
+		{
+			if (flowerbed[index] == 1)
+			{
+				if (index != 0)
+				{
+					flowerbed[index - 1] = 1;
+				}
+				if (index != end - 1)
+				{
+					flowerbed[index + 1] = 1;
+				}
+				index = index + 2;
+				continue;
+			}
+			++index;
+		}
+
+		index = 0;
+		int empty = 0;
+		while(index < end)							// второй проход, размещаем цветы
+		{
+			if (flowerbed[index] == 0)
+			{
+				if (index != 0)
+				{
+					flowerbed[index - 1] = 1;
+				}
+				if (index != end - 1)
+				{
+					flowerbed[index + 1] = 1;
+				}
+
+				flowerbed[index] = 1;
+				index = index + 2;
+				++empty;
+				continue;
+			} 
+			++index;
+		}
+		return empty >= n;
+    }
+};
+
+Лучшее решение от deep seek
+
+class Solution 
+{
+public:
+    bool canPlaceFlowers(vector<int>& flowerbed, int n) 
+    {
+        int count = 0;
+        int size = flowerbed.size();
+        
+        for (int i = 0; i < size && count < n; i++) 
+        {
+            if (flowerbed[i] == 0) 						// посадка возможна только в свободных клетках
+            {
+                // Проверяем, можно ли посадить здесь
+                bool leftEmpty = (i == 0) || (flowerbed[i-1] == 0);		// есть ли ограничение слева ? + граничные условия
+                bool rightEmpty = (i == size-1) || (flowerbed[i+1] == 0);	// есть ли ограничение справа ? + граничные условия
+                
+                if (leftEmpty && rightEmpty) 					// оба условия выполнены
+                {
+                    flowerbed[i] = 1; // сажаем
+                    count++;
+                    i++; // пропускаем следующую позицию (она теперь занята)	// ускоряем цикл на один шаг
+                }
+            }
+        }
+        return count >= n;
+    }
+};
+
+
+
+
+ 
