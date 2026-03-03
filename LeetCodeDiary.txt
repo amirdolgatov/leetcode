@@ -1,94 +1,163 @@
 Задача 605.
 
-Моя идея. 
-1. Пометить незанятые участки (первый проход)
-2. Разместить цветы там где это возможно (учитываем, что каждый новый цветок исключает посадку в сосоедних с ним клетках) (второй проход)
+	Моя идея. 
+	1. Пометить незанятые участки (первый проход)
+	2. Разместить цветы там где это возможно (учитываем, что каждый новый цветок исключает посадку в сосоедних с ним клетках) (второй проход)
 
-#include <iostream>
-#include <vector>
+		#include <iostream>
+		#include <vector>
 
-class Solution 
-{
-public:
-    bool canPlaceFlowers(std::vector<int>& flowerbed, int n) 
-    {
-    	int index = 0; 
-		int end = flowerbed.size();
-		while(index < end)								// первый проход
+		class Solution 
 		{
-			if (flowerbed[index] == 1)
+		public:
+		    bool canPlaceFlowers(std::vector<int>& flowerbed, int n) 
+		    {
+		    	int index = 0; 
+				int end = flowerbed.size();
+				while(index < end)								// первый проход
+				{
+					if (flowerbed[index] == 1)
+					{
+						if (index != 0)
+						{
+							flowerbed[index - 1] = 1;
+						}
+						if (index != end - 1)
+						{
+							flowerbed[index + 1] = 1;
+						}
+						index = index + 2;
+						continue;
+					}
+					++index;
+				}
+
+				index = 0;
+				int empty = 0;
+				while(index < end)							// второй проход, размещаем цветы
+				{
+					if (flowerbed[index] == 0)
+					{
+						if (index != 0)
+						{
+							flowerbed[index - 1] = 1;
+						}
+						if (index != end - 1)
+						{
+							flowerbed[index + 1] = 1;
+						}
+
+						flowerbed[index] = 1;
+						index = index + 2;
+						++empty;
+						continue;
+					} 
+					++index;
+				}
+				return empty >= n;
+		    }
+		};
+
+	Лучшее решение от deep seek
+
+		class Solution 
+		{
+		public:
+		    bool canPlaceFlowers(vector<int>& flowerbed, int n) 
+		    {
+			int count = 0;
+			int size = flowerbed.size();
+			
+			for (int i = 0; i < size && count < n; i++) 
 			{
-				if (index != 0)
+			    if (flowerbed[i] == 0) 						// посадка возможна только в свободных клетках
+			    {
+				// Проверяем, можно ли посадить здесь
+				bool leftEmpty = (i == 0) || (flowerbed[i-1] == 0);		// есть ли ограничение слева ? + граничные условия
+				bool rightEmpty = (i == size-1) || (flowerbed[i+1] == 0);	// есть ли ограничение справа ? + граничные условия
+				
+				if (leftEmpty && rightEmpty) 					// оба условия выполнены
 				{
-					flowerbed[index - 1] = 1;
+				    flowerbed[i] = 1; // сажаем
+				    count++;
+				    i++; // пропускаем следующую позицию (она теперь занята)	// ускоряем цикл на один шаг
 				}
-				if (index != end - 1)
-				{
-					flowerbed[index + 1] = 1;
-				}
-				index = index + 2;
-				continue;
+			    }
 			}
-			++index;
-		}
+			return count >= n;
+		    }
+		};
 
-		index = 0;
-		int empty = 0;
-		while(index < end)							// второй проход, размещаем цветы
-		{
-			if (flowerbed[index] == 0)
-			{
-				if (index != 0)
-				{
-					flowerbed[index - 1] = 1;
-				}
-				if (index != end - 1)
-				{
-					flowerbed[index + 1] = 1;
-				}
 
-				flowerbed[index] = 1;
-				index = index + 2;
-				++empty;
-				continue;
-			} 
-			++index;
-		}
-		return empty >= n;
-    }
-};
+Задача 151.
 
-Лучшее решение от deep seek
+	Реверс слов в строке (Reverse Words in a String)
+	Строка может иметь несколько пробелов между словами, их требуется исключить.
 
-class Solution 
-{
-public:
-    bool canPlaceFlowers(vector<int>& flowerbed, int n) 
+	Задача делится на несколько классических подзадач.
+
+	151.1. Удаление пробелов
+	Начнем с задачи исключения пробелов в строке. Она решается с использованием метода двух указателей.
+	Первый указатель (это индекс j, назовем его forward) будет указывать на начало текста, 
+	второй указатель (индекс i, назовем его back) указывает на свободное место, куда можно перенести слово.
+
+	void reduceSpaces(std::string& s)
     {
-        int count = 0;
-        int size = flowerbed.size();
-        
-        for (int i = 0; i < size && count < n; i++) 
-        {
-            if (flowerbed[i] == 0) 						// посадка возможна только в свободных клетках
-            {
-                // Проверяем, можно ли посадить здесь
-                bool leftEmpty = (i == 0) || (flowerbed[i-1] == 0);		// есть ли ограничение слева ? + граничные условия
-                bool rightEmpty = (i == size-1) || (flowerbed[i+1] == 0);	// есть ли ограничение справа ? + граничные условия
-                
-                if (leftEmpty && rightEmpty) 					// оба условия выполнены
-                {
-                    flowerbed[i] = 1; // сажаем
-                    count++;
-                    i++; // пропускаем следующую позицию (она теперь занята)	// ускоряем цикл на один шаг
-                }
-            }
-        }
-        return count >= n;
+	    int n = s.length();
+	    int i = 0, j = 0;
+	    while (j < n) 
+	    {
+			while (j < n && s[j] == ' ') j++;             	// forward пропускает пробелы, пока не встретит начало слова, возможно этот цикл сработает только один раз в начале
+			while (j < n && s[j] != ' ') s[i++] = s[j++];	// переносим слово влево, остановка на пробеле, очень хороший ход
+			while (j < n && s[j] == ' ') j++;				// forward пропускает пробелы
+			if (j < n) s[i++] = ' ';						// back передвигается правее, на второй пробел после слова, в точности где должно начинаться слово.
+	    }
+	    s.resize(i);
     }
-};
+	   
 
+    151.2. Реверс элементов массива
+    Нужно переставить местами элемент a[0] с элементом a[n - 1], элемент a[1] с элементом a[n - 2] и вообще каждый элемент a[i] с элементом a[n - 1 - i].
+    Индекс i растет, разность n - 1 - i убывает. Обмен необходимо производить пока i < n - 1 - i.
 
+    	i < n - 1 - i  	(1)
+    	2 * i < n - 1  	(2)
 
+    	поскольку числа целые, легко увидеть, что самое большое удовлетворящее (2) это 2 * i = n - 2
+    	значит справедливо равносильное неравенство
 
- 
+    	2 * i <= n - 2 	(3)
+
+    	выполним целочисленное деление i <= (n - 2) / 2
+
+    	i <= n/2 - 1 	(4)
+
+    	и, наконец перейдем к строгому неравенству
+
+    	i < n/2 		(5)
+
+    	Это удобно, потому что n - это длина диапазона.
+    	Приводим алгоритм для реверса выбранного участка строки.
+
+    	void reverseStr(std::string& s, int begin, int end)
+	    {
+	    	int n = end - begin;
+
+	    	for (int i = 0; i < n/2; ++i)
+	    	{
+	    		char temp = s[begin + i];			// заметим, что может быть begin = 0.
+	    		s[begin + i] = s[end - 1 - i];
+	    		s[end - 1 - i] = temp;
+	    	}
+	    }
+
+    151.2. Перестановка участков массива
+    На примере массива, разделенного на 3 участка.
+    Пусть дан массив [0, m + n + l].
+    Массив условно или не условно разделен на три части: [0, m], [m + 1, m + n], [m + n + 1, m + n + l].
+    Необходимо описанные участки расположить в обратном порядке. В данном случае участок [m + 1, m + n] остается в середине.
+    Участки по краям должны поменяться местами, в итоге должны получить массив | [m + n + 1, m + n + l] | [m + 1, m + n] | [0, m] |.
+
+    Решение
+    1. Развернуть каждый участок по отдельности.
+    2. Развернуть весь массив.

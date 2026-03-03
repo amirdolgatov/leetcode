@@ -34,13 +34,13 @@ public:
         {
             while(!isVowel(s[left]) && left < right)
             {
-                std::cout << "left: " << s[left] << std::endl;
+                // std::cout << "left: " << s[left] << std::endl;
                 left++;
             }
 
             while(!isVowel(s[right]) && left < right)
             {
-                std::cout << "right: " << s[right] << std::endl;
+                // std::cout << "right: " << s[right] << std::endl;
                 right--;
             }
 
@@ -51,10 +51,10 @@ public:
                 s[right] = temp;
                 left++;
                 right--;
-                std::cout << "change" << std::endl;    
+                // std::cout << "change" << std::endl;    
             }
 
-            std::cout << "end iteration" << std::endl;
+            // std::cout << "end iteration" << std::endl;
             sleep(1);
         }
 

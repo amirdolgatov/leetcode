@@ -84,12 +84,12 @@ public:
     void reverseStr(std::string& s, int begin, int end)
     {
     	int size = end - begin;
+
     	for (int i = 0; i < size/2; ++i)
     	{
-    		int index = begin + i;
-    		char temp = s[index];
-    		s[index] = s[end - index];
-    		s[end - index] = temp;
+    		char temp = s[begin + i];
+    		s[begin + i] = s[end - 1 - i];
+    		s[end - 1 - i] = temp;
     	}
     }
 };
@@ -97,6 +97,10 @@ public:
 int main()
 {
 	Solution solution;
-	std::cout << solution.reverseWords("abc ABC        AaaaaaaaaaaaaaaA AaA A         AA") << std::endl;
+	std::string str = "abc ABC        AaaaaaaaaaaaaaaA AaA A         AA";
+	solution.reverseStr(str, 0, 3);
+	std::cout << str << std::endl;
+	solution.reverseStr(str, 0, str.length());
+	std::cout << str << std::endl;
 	return 0;
 }
