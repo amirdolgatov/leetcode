@@ -49,19 +49,18 @@ public:
 		int j = 0;
 		int i = 0;
 		int n = s.length();
-	    while (j < n)
+	    while (j < n) 
 	    {
-	    	while(j < n && s[j++] != ' ')
-	    	if (j < n)
-	    	{
-	    		reverseStr(s, i, j);
-	    	}
-			while(j < n && s[j++] == ' ')
+			while (j < n && s[j] == ' ') j++;             	// j пропускает пробелы, пока не встретит начало слова
 			if (j < n)
 			{
-				i = j;     // начало следующей строки, если она есть
+				i = j;										// i переносится на начало слова
 			}
+			while (j < n && s[j] != ' ') j++;				// 
+			reverseStr(s, i, j);
 	    }
+	    reverseStr(s, 0, n);
+
         return s;
     }
 
@@ -98,9 +97,6 @@ int main()
 {
 	Solution solution;
 	std::string str = "abc ABC        AaaaaaaaaaaaaaaA AaA A         AA";
-	solution.reverseStr(str, 0, 3);
-	std::cout << str << std::endl;
-	solution.reverseStr(str, 0, str.length());
-	std::cout << str << std::endl;
+	std::cout << solution.reverseWords(str) << std::endl;
 	return 0;
 }
