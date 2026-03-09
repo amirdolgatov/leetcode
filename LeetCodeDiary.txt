@@ -184,5 +184,79 @@
 		    }
 
 
+Задача 334.
+Найти три числа, которые составляют возрастающую последовательность.
 
+	Задача сбиавает с толку. Сразу привожу свое решение.
+	Есть текущая последовательность и резервная, если резервная имеет более 2 элементов
+	она становится основной.
+
+
+    bool increasingTriplet(vector<int>& nums) 
+    {
+        auto n = nums.size();
+        int i = 0;
+        int A, B, a;
+
+        while(i + 1 < n && nums[i] >= nums[i + 1]) { i++; }
+        
+        if (i + 1 < n)
+        {
+            A = nums[i];
+            a = nums[i];
+            B = nums[i + 1];
+        }
+
+        while(i + 1 < n)
+        {
+            ++i;
+            if (nums[i] > B)
+            {
+                return true;
+            }
+            if (nums[i] > A)
+            {
+                B = nums[i];
+            }
+            else
+            {
+                if (nums[i] <= a)
+                {
+                    a = nums[i];
+                }
+                else
+                {
+                    A = a;
+                    B = nums[i];
+                }
+            }
+        }
+        return false;
+    }
+
+
+    А теперь клссическое решение
+
+    bool increasingTriplet(vector<int>& nums) 
+    {
+        int first = INT_MAX;
+        int second = INT_MAX;
+        
+        for (int num : nums) 
+        {
+            if (num <= first) 
+            {
+                first = num;           // самый маленький кандидат
+            } 
+            else if (num <= second) 
+            {
+                second = num;          // второй кандидат
+            } 
+            else 
+            {
+                return true;           // нашли третий > second
+            }
+        }
+        return false;
+    }
 
