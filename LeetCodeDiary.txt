@@ -404,5 +404,27 @@
 	
 	Почему мое решение не прокатило? Я искал длину только когда zeroes > k.
 	Они ищут на каждой итерации.
+	
+Задача 724.
+
+	Более эффективное с точни зрения памяти решение.
+	Решал в лоб, и не жалею.
+	
+	А между тем, лучшее решение такое 
+	
+	int pivotIndex(vector<int>& nums) 
+	{
+	    int total = accumulate(nums.begin(), nums.end(), 0);
+	    int left = 0;
+	    for (int i = 0; i < nums.size(); ++i) 
+	    {
+		if (left == total - left - nums[i]) 
+			return i;
+		left += nums[i];
+	    }
+	    return -1;
+	}
+
+
 
 
